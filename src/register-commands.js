@@ -37,27 +37,27 @@ const commands = [
             }, {
                 name: 'lvl',
                 description: 'Current LVL',
-                type: ApplicationCommandOptionType.String,
+                type: ApplicationCommandOptionType.Number,
                 required: true,
             }, {
                 name: 'gr',
                 description: 'Current Growth Rate',
-                type: ApplicationCommandOptionType.String,
+                type: ApplicationCommandOptionType.Number,
                 required: true,
             }, {
                 name: 'dmg',
                 description: 'Current Damage with buffs',
-                type: ApplicationCommandOptionType.String,
+                type: ApplicationCommandOptionType.Number,
                 required: true,
             }, {
                 name: 'acc',
                 description: 'Current Accuracy with buffs',
-                type: ApplicationCommandOptionType.String,
+                type: ApplicationCommandOptionType.Number,
                 required: true,
             }, {
                 name: 'def',
                 description: 'Current Defense with buffs',
-                type: ApplicationCommandOptionType.String,
+                type: ApplicationCommandOptionType.Number,
                 required: true,
             }
         ]

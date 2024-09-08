@@ -71,25 +71,6 @@ client.on('interactionCreate', async (interaction) => {
             }
         }
 
-        const lastEntryDate = new Date(latestEntry.DATE);
-        const currentDate = new Date();
-        
-        // Calculate the difference in milliseconds
-        const diffInMs = currentDate - lastEntryDate;
-        // Convert milliseconds to days
-        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-
-        if (!(diffInDays >= 7)) {
-            const remainingDays = Math.ceil(7 - diffInDays);
-            if (interaction.deferred) {
-                return interaction.editReply(`Your last data is only ${Math.floor(diffInDays)} days old. Please wait another ${remainingDays} days before submitting again.`);
-            } else {
-                return interaction.reply(`Your last data is only ${Math.floor(diffInDays)} days old. Please wait another ${remainingDays} days before submitting again.`);
-            }
-        }
-
-        console.log(latestEntry);
-
         const searchUrl = `${process.env.SHEET_GOOGLE_SCRIPT_URL}?sheetName=RAWDATA-MEMBERS&column=IGN&search=${ign}`;
         const searchResponse = await axios.get(searchUrl);
 

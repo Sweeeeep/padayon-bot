@@ -55,7 +55,7 @@ client.on('interactionCreate', async (interaction) => {
             const endOfCurrentWeek = new Date(startOfCurrentWeek);
             endOfCurrentWeek.setDate(startOfCurrentWeek.getDate() + 6); // Assuming week ends on Sunday
 
-            if (lastEntryDate >= startOfCurrentWeek && lastEntryDate <= endOfCurrentWeek) {
+            if (!(lastEntryDate >= startOfCurrentWeek && lastEntryDate <= endOfCurrentWeek)) {
                 if (interaction.deferred) {
                     return interaction.editReply(`Your progress data has already been added this week. Please wait until next week to update it..`);
                 } else {

@@ -3,6 +3,7 @@ require('dotenv').config();
 const { storeData, InitializeFirebaseApp } = require('./firebase');
 const { Client, IntentsBitField } = require('discord.js');
 const axios = require('axios');
+const moment = require('moment-timezone');
 
 const client = new Client({
     intents: [
@@ -42,26 +43,27 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.deferReply(); // Defer the reply to avoid timeout issues
 
         try {
-
             const checkUrl = `${process.env.SHEET_GOOGLE_SCRIPT_URL}?sheetName=RAWDATA-STATS&column=IGN&search=${ign}`;
             const checkResponse = await axios.get(checkUrl);
 
-            const latestEntry = checkResponse.data.sort((a, b) => new Date(b.DATE) - new Date(a.DATE))[0];
+            const lastEntry = checkResponse.data.sort((a, b) => new Date(b.DATE) - new Date(a.DATE))[0];
 
-            const currentDate = new Date();
-
-            const lastEntryDate = new Date(latestEntry.DATE);
-            const startOfCurrentWeek = getStartOfWeek(currentDate);
-            const endOfCurrentWeek = new Date(startOfCurrentWeek);
-            endOfCurrentWeek.setDate(startOfCurrentWeek.getDate() + 6); // Assuming week ends on Sunday
-
-            if (!(lastEntryDate >= startOfCurrentWeek && lastEntryDate <= endOfCurrentWeek)) {
-                if (interaction.deferred) {
-                    return interaction.editReply(`Your progress data has already been added this week. Please wait until next week to update it..`);
-                } else {
-                    return interaction.reply(`Your progress data has already been added this week. Please wait until next week to update it.`);
-                }
-            } 
+            if(lastEntry !== undefined){
+                const timeZone = 'Asia/Manila'; // Specify the desired timezone
+                const currentDate = moment().tz(timeZone);
+            
+                const lastEntryDate = moment(lastEntry.DATE).tz(timeZone);
+                const startOfCurrentWeek = moment().tz(timeZone).startOf('isoWeek'); // Start of the week (Monday) in timezone
+                const endOfCurrentWeek = moment().tz(timeZone).endOf('isoWeek');     // End of the week (Sunday) in timezone
+            
+                if (lastEntryDate.isBetween(startOfCurrentWeek, endOfCurrentWeek, null, '[]')) {
+                    if (interaction.deferred) {
+                        return interaction.editReply(`Your progress data has already been added this week. Please wait until next week to update it.`);
+                    } else {
+                        return interaction.reply(`Your progress data has already been added this week. Please wait until next week to update it`);
+                    }
+                } 
+            }
         } catch (error) {
             console.error('Error:', error.message);
             if (interaction.deferred) {

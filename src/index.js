@@ -88,8 +88,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
                 const lastEntry = checkResponse.data.sort((a, b) => new Date(b.DATE) - new Date(a.DATE))[0];
 
-                console.log(lastEntry)
-
                 if(lastEntry !== undefined){
                     const timeZone = 'Asia/Manila'; // Specify the desired timezone
                     const currentDate = moment().tz(timeZone);

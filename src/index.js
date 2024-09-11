@@ -35,9 +35,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
 
         const link = interaction.options.getString('link');
-        const match = link.match(/\/d\/([a-zA-Z0-9_-]+)\/edit/);
+        const sheetId = (link.match(/\/d\/([a-zA-Z0-9_-]+)\/edit/) || [])[1];
 
-        if (!match) {
+
+        if (sheetId === undefined) {
             await interaction.reply({ content : "Error: Invalid URL format. Unable to extract the Sheet ID.", ephemeral:true });
             return;
         }
@@ -46,10 +47,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         if (existingLink) {
             // Clear the old link before setting the new one
             await clearGoogleSheetLink(interaction.guild.id);
-            await setGoogleSheetLink(interaction.guild.id, match[1]);
+            await setGoogleSheetLink(interaction.guild.id, sheetId);
             await interaction.reply({ content : `Google Sheets link was reset and set to: ${link}`, ephemeral: true });
         } else {
-            await setGoogleSheetLink(interaction.guild.id, link);
+            await setGoogleSheetLink(interaction.guild.id, sheetId);
             await interaction.reply({ content : `Google Sheets link set to: ${link}`, ephemeral: true });
         }
     }

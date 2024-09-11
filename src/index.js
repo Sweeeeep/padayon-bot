@@ -47,10 +47,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
             // Clear the old link before setting the new one
             await clearGoogleSheetLink(interaction.guild.id);
             await setGoogleSheetLink(interaction.guild.id, match[1]);
-            await interaction.reply(`Google Sheets link was reset and set to: ${link}`);
+            await interaction.reply({ content : `Google Sheets link was reset and set to: ${link}`, ephemeral: true });
         } else {
             await setGoogleSheetLink(interaction.guild.id, link);
-            await interaction.reply(`Google Sheets link set to: ${link}`);
+            await interaction.reply({ content : `Google Sheets link set to: ${link}`, ephemeral: true });
         }
     }
 
@@ -71,7 +71,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const googleSheetLink = await getGoogleSheetLink(interaction.guild.id)
 
         if(googleSheetLink === null){
-            await interaction.reply({content : `Google Sheets link set to: ${link}`, ephemeral: true});
+            await interaction.reply({ content : `Please contact the server admin to set up the bot.`, ephemeral: true });
             return;
         }
 
@@ -167,7 +167,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 client.on(Events.ClientReady, (c) => {
     console.log(`✅ ${c.user.tag} is online`);
-    
+
     client.guilds.cache.forEach(async guild => {
         await registerCommands(guild.id);
     });

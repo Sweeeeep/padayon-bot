@@ -11,7 +11,7 @@ const commands = [
         options: [
             {
                 name: 'ign',
-                description: 'The in-game name of the character',
+                description: 'The in-game name of the character (case sensitive)',
                 type: ApplicationCommandOptionType.String,
                 required: true,
             },

@@ -100,18 +100,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
                 
                     if (lastEntryDate.isBetween(startOfCurrentWeek, endOfCurrentWeek, null, '[]')) {
                         if (interaction.deferred) {
-                            return interaction.editReply(`Your progress data has already been added this week. Please wait until next week to update it.`);
+                            return interaction.editReply({ content : `Your progress data has already been added this week. Please wait until next week to update it.`, ephemeral: true });
                         } else {
-                            return interaction.reply(`Your progress data has already been added this week. Please wait until next week to update it`);
+                            return interaction.reply({ content : `Your progress data has already been added this week. Please wait until next week to update it.`, ephemeral: true });
                         }
                     } 
                 }
             } catch (error) {
                 console.error('Error:', error.message);
                 if (interaction.deferred) {
-                    return interaction.editReply(`Your progress data has already been added this week. Please wait until next week to update it..`);
+                    return interaction.editReply({ content : `Your progress data has already been added this week. Please wait until next week to update it.`, ephemeral: true });
                 } else {
-                    return interaction.reply(`Your progress data has already been added this week. Please wait until next week to update it.`);
+                    return interaction.reply({ content : `Your progress data has already been added this week. Please wait until next week to update it.`, ephemeral: true });
                 }
             }
 
@@ -121,9 +121,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
             if (searchResponse.data.length === 0) {
                 // Check if the interaction is still valid before trying to edit the reply
                 if (interaction.deferred) {
-                    return interaction.editReply("Unable to find your IGN in the records. Please contact your GL/DGM.");
+                    return interaction.editReply({ content : "Unable to find your IGN in the records. Please contact your GL/DGM.", ephemeral: true });
                 } else {
-                    return interaction.reply("Unable to find your IGN in the records. Please contact your GL/DGM.");
+                    return interaction.reply({ content : "Unable to find your IGN in the records. Please contact your GL/DGM.", ephemeral: true });
                 }
             }
 
@@ -147,19 +147,19 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
             // Check if the interaction is still valid before trying to edit the reply
             if (interaction.deferred) {
-                return interaction.editReply("Thank you for submitting the details of your character!");
+                return interaction.editReply({ content : "Thank you for submitting the details of your character!", ephemeral: true });
             } else {
-                return interaction.reply("Thank you for submitting the details of your character!");
+                return interaction.reply({ content : "Thank you for submitting the details of your character!", ephemeral: true });
             }
         } catch (error) {
             console.error('Error handling interaction:', error);
             // Handle errors when interaction may have expired
             if (interaction.deferred) {
-                return interaction.editReply("An error occurred. Please report it to the GL/DGM.");
+                return interaction.editReply({ content : "An error occurred. Please report it to the GL/DGM.", ephemeral: true });
             } else if (interaction.replied) {
                 return; // Interaction has already been responded to
             } else {
-                return interaction.reply("An error occurred. Please report it to the GL/DGM.");
+                return interaction.reply({ content : "An error occurred. Please report it to the GL/DGM.", ephemeral: true});
             }
         }
     }

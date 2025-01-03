@@ -35,7 +35,7 @@ def reduce_image_quality(image_path, output_path, scale=0.5, quality=50):
         with Image.open(image_path) as img:
             # Resize the image
             new_size = (int(img.width * scale), int(img.height * scale))
-            img = img.resize(new_size, Image.ANTIALIAS)
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
             # Save the image with reduced quality
             img.save(output_path, format="JPEG", quality=quality)
         return output_path

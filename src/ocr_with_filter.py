@@ -29,15 +29,15 @@ def load_names_from_json(json_string):
         return []
 
 def find_matching_text(detected_text, search_list):
-    # Flatten nested lists and join the elements into a single string
+    # Ensure that detected_text is a string, handling non-string types (e.g., int)
     if isinstance(detected_text, list):
-        # Ensure every element is a string (flatten if necessary)
+        # Flatten nested lists and ensure each element is a string
         detected_text = " ".join([str(item) for item in detected_text])
+    else:
+        # If it's not a list, ensure it's a string (convert if necessary)
+        detected_text = str(detected_text)
 
-    # If it's not a string after flattening, return empty list
-    if not isinstance(detected_text, str):
-        return []
-
+    # Proceed with matching after confirming it's a string
     return [name for name in search_list if name.lower() in detected_text.lower()]
 
 

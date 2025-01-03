@@ -16,10 +16,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 # Create an EasyOCR reader for supported languages
-reader_en_th = easyocr.Reader(['en', 'th'])
-reader_en_id = easyocr.Reader(['en', 'id'])
-reader_en_ch_sim = easyocr.Reader(['en', 'ch_sim'])
-reader_en_ch_tra = easyocr.Reader(['en', 'ch_tra'])
+reader_en_th = easyocr.Reader(['en', 'th'], gpu=False)
+reader_en_id = easyocr.Reader(['en', 'id'], gpu=False)
+reader_en_ch_sim = easyocr.Reader(['en', 'ch_sim'], gpu=False)
+reader_en_ch_tra = easyocr.Reader(['en', 'ch_tra'], gpu=False)
 
 def load_names_from_json(json_string):
     try:

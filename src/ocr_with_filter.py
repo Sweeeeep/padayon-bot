@@ -1,13 +1,12 @@
 import os
-os.environ['USE_NNPACK'] = '0'
 import ssl
 import warnings
 import redis
-import easyocr
 import json
 import sys
 import logging
-
+from google.cloud import vision
+from google.cloud.vision import types
 
 # Suppress FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -18,11 +17,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Initialize Redis client
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-# Create an EasyOCR reader for supported languages
-reader_en_th = easyocr.Reader(['en', 'th'], gpu=False, detector='dbnet18')
-reader_en_id = easyocr.Reader(['en', 'id'], gpu=False, detector='dbnet18')
-reader_en_ch_sim = easyocr.Reader(['en', 'ch_sim'], gpu=False, detector='dbnet18')
-reader_en_ch_tra = easyocr.Reader(['en', 'ch_tra'], gpu=False, detector='dbnet18')
+# Initialize Google Cloud Vision client
+client = vision.ImageAnnotatorClient()
 
 def load_names_from_json(json_string):
     try:
@@ -37,14 +33,28 @@ def load_names_from_json(json_string):
 def find_matching_text(detected_text, search_list):
     return [name for name in search_list if name.lower() in detected_text.lower()]
 
-def perform_ocr_and_find_names(reader, image_path, names_to_find):
+def perform_ocr_and_find_names(image_path, names_to_find):
     try:
-        results = reader.readtext(image_path)
+        # Read the image file and use Google Vision API
+        with open(image_path, 'rb') as image_file:
+            content = image_file.read()
+
+        image = types.Image(content=content)
+        response = client.text_detection(image=image)
+
+        # Check if OCR was successful
+        if response.error.message:
+            logging.error(f"Google Vision API error: {response.error.message}")
+            return []
+
         found_names = []
-        for bbox, text, prob in results:
+        # Loop through the detected texts and match with names
+        for text_annotation in response.text_annotations:
+            text = text_annotation.description
             matched_names = find_matching_text(text, names_to_find)
             if matched_names:
                 found_names.extend(matched_names)
+        
         return found_names
     except Exception as e:
         logging.error(f"Error during OCR: {e}")
@@ -68,11 +78,7 @@ def process_job(message):
         return
 
     names_to_find = load_names_from_json(names_json)
-    found_names = []
-    found_names.extend(perform_ocr_and_find_names(reader_en_th, image_path, names_to_find))
-    found_names.extend(perform_ocr_and_find_names(reader_en_id, image_path, names_to_find))
-    found_names.extend(perform_ocr_and_find_names(reader_en_ch_sim, image_path, names_to_find))
-    found_names.extend(perform_ocr_and_find_names(reader_en_ch_tra, image_path, names_to_find))
+    found_names = perform_ocr_and_find_names(image_path, names_to_find)
 
     output = {
         "imagePath": image_path,
@@ -80,7 +86,7 @@ def process_job(message):
         "guildId": guild_id,
         "matching_names": list(set(found_names)),
         "total_names_found": len(found_names),
-        "interactionOptions" : {
+        "interactionOptions": {
             "datetime": datetime,
             "type": type_activity,
             "location": location

@@ -1,10 +1,10 @@
 import ssl
 import warnings
 import redis
-import easyocr
 import json
 import sys
 import logging
+from rapidocr_onnxruntime import RapidOCR
 
 # Suppress FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -15,11 +15,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Initialize Redis client
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-# Create an EasyOCR reader for supported languages
-reader_en_th = easyocr.Reader(['en', 'th'], gpu=False)
-reader_en_id = easyocr.Reader(['en', 'id'], gpu=False)
-reader_en_ch_sim = easyocr.Reader(['en', 'ch_sim'], gpu=False)
-reader_en_ch_tra = easyocr.Reader(['en', 'ch_tra'], gpu=False)
+# Initialize RapidOCR
+ocr = RapidOCR()
 
 def load_names_from_json(json_string):
     try:
@@ -34,11 +31,12 @@ def load_names_from_json(json_string):
 def find_matching_text(detected_text, search_list):
     return [name for name in search_list if name.lower() in detected_text.lower()]
 
-def perform_ocr_and_find_names(reader, image_path, names_to_find):
+def perform_ocr_and_find_names(image_path, names_to_find):
     try:
-        results = reader.readtext(image_path)
+        results = ocr(image_path)  # Perform OCR using RapidOCR
         found_names = []
-        for bbox, text, prob in results:
+        for result in results:
+            text = result[1]  # Extract detected text
             matched_names = find_matching_text(text, names_to_find)
             if matched_names:
                 found_names.extend(matched_names)
@@ -65,11 +63,7 @@ def process_job(message):
         return
 
     names_to_find = load_names_from_json(names_json)
-    found_names = []
-    found_names.extend(perform_ocr_and_find_names(reader_en_th, image_path, names_to_find))
-    found_names.extend(perform_ocr_and_find_names(reader_en_id, image_path, names_to_find))
-    found_names.extend(perform_ocr_and_find_names(reader_en_ch_sim, image_path, names_to_find))
-    found_names.extend(perform_ocr_and_find_names(reader_en_ch_tra, image_path, names_to_find))
+    found_names = perform_ocr_and_find_names(image_path, names_to_find)
 
     output = {
         "imagePath": image_path,

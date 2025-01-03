@@ -6,7 +6,6 @@ import json
 import sys
 import logging
 from google.cloud import vision
-from google.cloud.vision import types
 
 # Suppress FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -39,7 +38,7 @@ def perform_ocr_and_find_names(image_path, names_to_find):
         with open(image_path, 'rb') as image_file:
             content = image_file.read()
 
-        image = types.Image(content=content)
+        image = vision.Image(content=content)  # Use vision.Image directly
         response = client.text_detection(image=image)
 
         # Check if OCR was successful

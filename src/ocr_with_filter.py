@@ -1,3 +1,5 @@
+import os
+os.environ['USE_NNPACK'] = '0'
 import ssl
 import warnings
 import redis
@@ -5,6 +7,7 @@ import easyocr
 import json
 import sys
 import logging
+
 
 # Suppress FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)

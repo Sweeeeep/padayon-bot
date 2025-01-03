@@ -44,6 +44,7 @@ def find_matching_text(detected_text, search_list):
 def perform_ocr_and_find_names(image_path, names_to_find):
     try:
         results = ocr(image_path)  # Perform OCR using RapidOCR
+        print results
         found_names = []
         for result in results:
             text = result[1]  # Extract detected text

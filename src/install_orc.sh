@@ -12,7 +12,7 @@ echo "Updating system and installing dependencies..."
 apt update && apt upgrade -y
 
 # Install necessary system packages
-apt install -y python3 python3-pip redis-server curl
+apt install -y python3.8-venv python3.8-pip redis-server curl
 
 # Enable and start the Redis server
 systemctl enable redis-server
@@ -44,7 +44,7 @@ cat <<EOL > $PM2_CONFIG
 module.exports = {
   apps: [
     {
-      name: "job_handler",
+      name: "ocr_handler",
       script: "$SCRIPT_PATH",
       interpreter: "$(which python3)",
       env: {
@@ -56,7 +56,7 @@ module.exports = {
 };
 EOL
 
-echo "Starting the job handler using PM2..."
+echo "Starting the ocr handler using PM2..."
 
 # Start the job handler with PM2
 pm2 start $PM2_CONFIG
@@ -70,5 +70,5 @@ pm2 save
 
 echo "Installation completed."
 echo "To check the status of the job handler, run: pm2 status"
-echo "To view logs, run: pm2 logs job_handler"
-echo "To restart the service, run: pm2 restart job_handler"
+echo "To view logs, run: pm2 logs ocr_handler"
+echo "To restart the service, run: pm2 restart ocr_handler"

@@ -5,7 +5,6 @@ import easyocr
 import json
 import sys
 import logging
-from PIL import Image
 
 # Suppress FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -16,32 +15,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Initialize Redis client
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-# Create EasyOCR readers for supported languages
+# Create an EasyOCR reader for supported languages
 reader_en_th = easyocr.Reader(['en', 'th'], gpu=False, detector='dbnet18')
 reader_en_id = easyocr.Reader(['en', 'id'], gpu=False, detector='dbnet18')
 reader_en_ch_sim = easyocr.Reader(['en', 'ch_sim'], gpu=False, detector='dbnet18')
 reader_en_ch_tra = easyocr.Reader(['en', 'ch_tra'], gpu=False, detector='dbnet18')
-
-def reduce_image_quality(image_path, output_path, scale=0.5, quality=50):
-    """
-    Reduce the quality of an image by resizing and adjusting compression.
-    :param image_path: Path to the input image.
-    :param output_path: Path to save the reduced quality image.
-    :param scale: Scaling factor for resizing (default is 0.5).
-    :param quality: JPEG quality (default is 50).
-    :return: Path to the processed image.
-    """
-    try:
-        with Image.open(image_path) as img:
-            # Resize the image
-            new_size = (int(img.width * scale), int(img.height * scale))
-            img = img.resize(new_size, Image.Resampling.LANCZOS)
-            # Save the image with reduced quality
-            img.save(output_path, format="JPEG", quality=quality)
-        return output_path
-    except Exception as e:
-        logging.error(f"Error reducing image quality: {e}")
-        return image_path
 
 def load_names_from_json(json_string):
     try:
@@ -58,11 +36,7 @@ def find_matching_text(detected_text, search_list):
 
 def perform_ocr_and_find_names(reader, image_path, names_to_find):
     try:
-        # Reduce image quality
-        reduced_image_path = reduce_image_quality(image_path, "reduced_image.jpg")
-        
-        # Perform OCR on the reduced-quality image
-        results = reader.readtext(reduced_image_path)
+        results = reader.readtext(image_path)
         found_names = []
         for bbox, text, prob in results:
             matched_names = find_matching_text(text, names_to_find)

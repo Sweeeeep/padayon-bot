@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,12 +12,17 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.7",
-    "bull": "^4.12.9",
+    "bullmq": "^5.13.0",
     "discord.js": "^14.15.2",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.0",
     "firebase-admin": "^12.4.0",
+    "fs": "^0.0.1-security",
     "google-spreadsheet": "^4.1.2",
-    "moment-timezone": "^0.5.45"
+    "moment-timezone": "^0.5.45",
+    "node-fetch": "^2.7.0",
+    "path": "^0.12.7",
+    "python-shell": "^5.0.0",
+    "redis": "^4.7.0"
   }
 }

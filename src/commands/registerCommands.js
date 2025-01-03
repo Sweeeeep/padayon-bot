@@ -5,6 +5,86 @@ const commands = [
     {
         name:'ping',
         description: 'replies pong'
+    },{
+        name:'attendance',
+        description: 'Add attendance by providing a screenshot of players in the cave',
+        options: [
+            {
+                name: 'screenshot',
+                description: 'Upload the screenshot showing players in the cave.',
+                type: ApplicationCommandOptionType.Attachment,
+                required: true,
+            },{
+                name: 'datetime',
+                description: 'Date and time when the screenshot was taken (format: M/D/YYYY H:m, 24-hour format)',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },{
+                name: 'type',
+                description: 'Specify the type of activity (Attack/Contest, Defend, Help, Take).',
+                type: ApplicationCommandOptionType.String,
+                choices: [
+                    {
+                        name: 'Attack/Contest',
+                        value: 'Attack/Contest'
+                    },{
+                        name: 'Defend/Help',
+                        value: 'Defend/Help'
+                    },{
+                        name: 'Take',
+                        value: 'Take'
+                    },
+                ],
+                required: true,
+            },{
+                name: 'location',
+                description: 'Select the cave or region where the boss was located.',
+                type: ApplicationCommandOptionType.String,
+                choices: [
+                    {
+                        name: 'Masarta Ice Cavern Cave 1 Tigdal',
+                        value: 'tigdal'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 2 Gatphillian', 
+                        value: 'gatphillian'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 3 Modi',
+                        value: 'modi'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 3 Hotura',
+                        value: 'hotura'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 4 Stormid',
+                        value: 'stormid'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 4 Panderre',
+                        value: 'panderre'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 5 Maltanis',
+                        value: 'maltanis'
+                    }, {
+                        name: 'Masarta Ice Cavern Cave 6 Dardaloca',
+                        value: 'dardaloca'
+                    }, {
+                        name: 'Masarta Eerie Rock Sanctuary Region 2 Hakir',
+                        value: 'hakir'
+                    }, {
+                        name: 'Masarta Eerie Rock Sanctuary Region 3 Damiross',
+                        value: 'damiross'
+                    }, {
+                        name: 'Masarta Eerie Rock Sanctuary Region 4 Kafka',
+                        value: 'kafka'
+                    }, {
+                        name: 'Knight of Death',
+                        value: 'kod'
+                    }, {
+                        name: 'Ruined Knight',
+                        value: 'rk'
+                    }
+                ],
+                required: true,
+            }
+        ]
     }, {
         name: 'update-stats',
         description: 'Update character stats for tracking progress',

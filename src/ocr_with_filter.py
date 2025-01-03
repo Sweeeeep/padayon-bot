@@ -29,6 +29,12 @@ def load_names_from_json(json_string):
         return []
 
 def find_matching_text(detected_text, search_list):
+    # Ensure detected_text is a string
+    if isinstance(detected_text, list):
+        detected_text = " ".join(detected_text)  # If it's a list, join it into a single string
+    elif not isinstance(detected_text, str):
+        return []  # If it's neither a list nor a string, return an empty list
+
     return [name for name in search_list if name.lower() in detected_text.lower()]
 
 def perform_ocr_and_find_names(image_path, names_to_find):
